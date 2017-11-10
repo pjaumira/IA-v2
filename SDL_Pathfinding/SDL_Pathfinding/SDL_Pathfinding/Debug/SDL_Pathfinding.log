@@ -1,2 +1,10 @@
-﻿  SDL_Pathfinding.vcxproj -> C:\Users\pjaumira\Downloads\SDL_Pathfinding\\bin\SDL_Pathfinding.exe
-  SDL_Pathfinding.vcxproj -> C:\Users\pjaumira\Downloads\SDL_Pathfinding\\bin\SDL_Pathfinding.pdb (Partial PDB)
+﻿  main.cpp
+SceneDjikstra.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall SceneDjikstra::~SceneDjikstra(void)" (??1SceneDjikstra@@UAE@XZ) referenced in function "public: virtual void * __thiscall SceneDjikstra::`scalar deleting destructor'(unsigned int)" (??_GSceneDjikstra@@UAEPAXI@Z)
+SceneDjikstra.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall SceneDjikstra::update(float,union SDL_Event *)" (?update@SceneDjikstra@@UAEXMPATSDL_Event@@@Z)
+SceneDjikstra.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall SceneDjikstra::draw(void)" (?draw@SceneDjikstra@@UAEXXZ)
+SceneDjikstra.obj : error LNK2001: unresolved external symbol "public: virtual char const * __thiscall SceneDjikstra::getTitle(void)" (?getTitle@SceneDjikstra@@UAEPBDXZ)
+SceneDjikstra.obj : error LNK2019: unresolved external symbol "private: void __thiscall SceneDjikstra::initMaze(void)" (?initMaze@SceneDjikstra@@AAEXXZ) referenced in function "public: __thiscall SceneDjikstra::SceneDjikstra(void)" (??0SceneDjikstra@@QAE@XZ)
+SceneDjikstra.obj : error LNK2019: unresolved external symbol "private: bool __thiscall SceneDjikstra::loadTextures(char *,char *)" (?loadTextures@SceneDjikstra@@AAE_NPAD0@Z) referenced in function "public: __thiscall SceneDjikstra::SceneDjikstra(void)" (??0SceneDjikstra@@QAE@XZ)
+SceneDjikstra.obj : error LNK2019: unresolved external symbol "private: struct Vector2D __thiscall SceneDjikstra::cell2pix(struct Vector2D)" (?cell2pix@SceneDjikstra@@AAE?AUVector2D@@U2@@Z) referenced in function "public: __thiscall SceneDjikstra::SceneDjikstra(void)" (??0SceneDjikstra@@QAE@XZ)
+SceneDjikstra.obj : error LNK2019: unresolved external symbol "private: bool __thiscall SceneDjikstra::isValidCell(struct Vector2D)" (?isValidCell@SceneDjikstra@@AAE_NUVector2D@@@Z) referenced in function "public: __thiscall SceneDjikstra::SceneDjikstra(void)" (??0SceneDjikstra@@QAE@XZ)
+C:\Users\pjaumira\Documents\GitHub\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe : fatal error LNK1120: 8 unresolved externals
