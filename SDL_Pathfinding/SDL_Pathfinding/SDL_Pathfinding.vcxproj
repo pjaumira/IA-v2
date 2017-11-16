@@ -132,7 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Agent.cpp" />
+    <ClCompile Include="..\src\Graph.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\Node.cpp" />
     <ClCompile Include="..\src\SceneAEstrella.cpp" />
     <ClCompile Include="..\src\SceneDjikstra.cpp" />
     <ClCompile Include="..\src\SceneGreedyBFS.cpp" />
@@ -143,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Agent.h" />
+    <ClInclude Include="..\src\Node.h" />
     <ClInclude Include="..\src\Path.h" />
     <ClInclude Include="..\src\SceneAEstrella.h" />
     <ClInclude Include="..\src\SceneDjikstra.h" />
@@ -153,6 +156,7 @@
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\SDL_SimpleApp.h" />
     <ClInclude Include="..\src\Vector2D.h" />
+    <ClInclude Include="Graph.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\spritesheet.png" />

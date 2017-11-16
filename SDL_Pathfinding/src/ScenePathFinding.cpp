@@ -9,6 +9,7 @@ ScenePathFinding::ScenePathFinding()
 	num_cell_x = SRC_WIDTH / CELL_SIZE;
 	num_cell_y = SRC_HEIGHT / CELL_SIZE;
 	initMaze();
+	initNodes();
 	loadTextures("../res/maze.png", "../res/coin.png");
 
 	srand((unsigned int)time(NULL));
@@ -277,6 +278,110 @@ void ScenePathFinding::initMaze()
 	}
 
 }
+
+void ScenePathFinding::initNodes() {
+	//primero de todo, dimensionamos la matriz que contendrá todos los nodos
+	//maze_nodes.resize(num_cell_x);
+	for (int i = 0; i < num_cell_x; i++)
+	{
+		vector<Node*> node_col(num_cell_y, nullptr);
+		maze_nodes.push_back(node_col);
+	}
+
+	Node *node = new Node;
+	maze_nodes[2][3] = node;
+
+	//ahora que tenemos una matriz del tamaño del mapa, añadimos nodos allá donde no haya muros
+
+	for (int i = 0; i < num_cell_x; i++)
+	{
+		for (int j = 0; j < num_cell_y; j++)
+		{
+			if (terrain[i][j] != 0)
+			{
+				Node *node = new Node;
+				maze_nodes[i][j] = node;
+			}
+		}
+	}
+
+	//ahora que tenemos una matriz rellena de nodos y espacios vacios, hay que linkear los nodos entre ellos
+
+	//comprobamos si en la matriz hay un nodo
+	for (int i = 0; i < num_cell_x; i++)
+	{
+		for (int j = 0; j < num_cell_y; j++)
+		{
+			//primero de todo, comprobamos si la casilla en cuestión es un nodo o una pared
+			if (maze_nodes[i][j] != nullptr)
+			{
+				//ahora comprobaremos si el nodo tiene vecinos. Si los tiene los vincularemos al nodo
+
+				//COMPROBAMOS ARRIBA
+				if (i > 0)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de arriba
+					if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i - 1][j];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo superior, no haremos nada
+				}
+
+				//COMPROBAMOS ABAJO
+				if (i < num_cell_x - 1)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de abajo
+					if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i + 1][j];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo inferior, no haremos nada
+				}
+
+				//COMPROBAMOS IZQUIERDA
+				if (j > 0)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de la izquierda
+					if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i][j - 1];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo a la izquierda, no haremos nada
+				}
+
+				//COMPROBAMOS DERECHA
+				if (j < num_cell_y - 1)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de la derecha
+					if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i][j + 1];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo a la derecha, no haremos nada
+				}
+			}
+			else
+			{
+				//si es un muro no haremos nada
+			}
+		}
+	}
+
+	//deberiamos tener todos los nodos linkeados entre ellos
+	//Solo faltara linkear los nodos excepcionales que forman el tunel
+
+	//linkeamos la entrada de la izquierda
+	maze_nodes[0][10]->LeftNeighbor = maze_nodes[num_cell_x - 1][10];
+	maze_nodes[0][11]->LeftNeighbor = maze_nodes[num_cell_x - 1][11];
+	maze_nodes[0][12]->LeftNeighbor = maze_nodes[num_cell_x - 1][12];
+
+	//linkeamos la entrada de la derecha
+	maze_nodes[num_cell_x - 1][10]->RightNeighbor = maze_nodes[0][10];
+	maze_nodes[num_cell_x - 1][11]->RightNeighbor = maze_nodes[0][11];
+	maze_nodes[num_cell_x - 1][12]->RightNeighbor = maze_nodes[0][12];
+}
+
 
 bool ScenePathFinding::loadTextures(char* filename_bg, char* filename_coin)
 {

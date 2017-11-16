@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Agent.h"
 #include "Path.h"
+#include "Node.h"
 
 class SceneGreedyBFS :
 	public Scene
@@ -35,4 +36,9 @@ private:
 	Vector2D pix2cell(Vector2D pix);
 	bool isValidCell(Vector2D cell);
 
+
+	
+	std::vector< std::vector<Node*> >maze_nodes;
+
+	void initNodes();
 };
