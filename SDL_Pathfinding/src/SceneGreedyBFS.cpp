@@ -9,6 +9,7 @@ SceneGreedyBFS::SceneGreedyBFS()
 	num_cell_x = SRC_WIDTH / CELL_SIZE;
 	num_cell_y = SRC_HEIGHT / CELL_SIZE;
 	initMaze();
+	initNodes();
 	loadTextures("../res/maze.png", "../res/coin.png");
 
 	srand((unsigned int)time(NULL));
@@ -150,7 +151,7 @@ void SceneGreedyBFS::draw()
 
 const char* SceneGreedyBFS::getTitle()
 {
-	return "SDL Steering Behaviors :: GreedyBFS Demo";
+	return "SDL Steering Behaviors :: PathFinding1 Demo";
 }
 
 void SceneGreedyBFS::drawMaze()
@@ -278,6 +279,175 @@ void SceneGreedyBFS::initMaze()
 
 }
 
+void SceneGreedyBFS::initNodes() {
+	//primero de todo, dimensionamos la matriz que contendrá todos los nodos
+	//maze_nodes.resize(num_cell_x);
+	for (int i = 0; i < num_cell_x; i++)
+	{
+		vector<Node*> node_col(num_cell_y, nullptr);
+		maze_nodes.push_back(node_col);
+	}
+
+	/*Node *node = new Node;
+	maze_nodes[2][3] = node;*/
+
+//ahora que tenemos una matriz del tamaño del mapa, añadimos nodos allá donde no haya muros
+//cada vez que creamos un nodo le añadimos un número identificativo único
+int identificator = 1;  //empezamos por el identificador 1
+for (int i = 0; i < num_cell_x; i++)
+{
+	for (int j = 0; j < num_cell_y; j++)
+	{
+		if (terrain[i][j] != 0)
+		{
+			Node *node = new Node(identificator);
+			maze_nodes[i][j] = node;
+			identificator++;
+		}
+	}
+}
+
+//ahora que tenemos una matriz rellena de nodos y espacios vacios, hay que linkear los nodos entre ellos
+
+//comprobamos si en la matriz hay un nodo
+for (int i = 0; i < num_cell_x; i++)
+{
+	for (int j = 0; j < num_cell_y; j++)
+	{
+		//primero de todo, comprobamos si la casilla en cuestión es un nodo o una pared
+		if (maze_nodes[i][j] != nullptr)
+		{
+			//ahora comprobaremos si el nodo tiene vecinos. Si los tiene los vincularemos al nodo
+
+			//COMPROBAMOS ARRIBA
+			if (i > 0)
+			{
+				//si hay un nodo, vinculamos el actual con el vecino de arriba
+				if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i - 1][j];
+			}
+			else
+			{
+				//si sale 0 es que no existe nodo superior, no haremos nada
+			}
+
+			//COMPROBAMOS ABAJO
+			if (i < num_cell_x - 1)
+			{
+				//si hay un nodo, vinculamos el actual con el vecino de abajo
+				if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i + 1][j];
+			}
+			else
+			{
+				//si sale 0 es que no existe nodo inferior, no haremos nada
+			}
+
+			//COMPROBAMOS IZQUIERDA
+			if (j > 0)
+			{
+				//si hay un nodo, vinculamos el actual con el vecino de la izquierda
+				if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i][j - 1];
+			}
+			else
+			{
+				//si sale 0 es que no existe nodo a la izquierda, no haremos nada
+			}
+
+			//COMPROBAMOS DERECHA
+			if (j < num_cell_y - 1)
+			{
+				//si hay un nodo, vinculamos el actual con el vecino de la derecha
+				if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i][j + 1];
+			}
+			else
+			{
+				//si sale 0 es que no existe nodo a la derecha, no haremos nada
+			}
+		}
+		else
+		{
+			//si es un muro no haremos nada
+		}
+	}
+}
+
+//deberiamos tener todos los nodos linkeados entre ellos
+//Solo faltara linkear los nodos excepcionales que forman el tunel
+
+//linkeamos la entrada de la izquierda
+maze_nodes[0][10]->LeftNeighbor = maze_nodes[num_cell_x - 1][10];
+maze_nodes[0][11]->LeftNeighbor = maze_nodes[num_cell_x - 1][11];
+maze_nodes[0][12]->LeftNeighbor = maze_nodes[num_cell_x - 1][12];
+
+//linkeamos la entrada de la derecha
+maze_nodes[num_cell_x - 1][10]->RightNeighbor = maze_nodes[0][10];
+maze_nodes[num_cell_x - 1][11]->RightNeighbor = maze_nodes[0][11];
+maze_nodes[num_cell_x - 1][12]->RightNeighbor = maze_nodes[0][12];
+}
+
+void SceneGreedyBFS::Algorithm_BFS()
+{
+	//inicializamos la frontera con la posición inicial del jugador
+	nodos_frontera.push_back(maze_nodes[agents[0]->getPosition().y][agents[0]->getPosition().x]); //cuidado con la X y la Y !!!!!!
+
+	//mientras la frontera no este vacia...
+	while (nodos_frontera.size() != 0)
+	{
+		
+		//obtenemos el primer nodo de la frontera
+		Node* nodo = nodos_frontera.front();
+
+		//comprobamos que no ha sido visitado
+		if (std::find(nodos_visitados.begin(), nodos_visitados.end(), nodo) != nodos_visitados.end())
+		{
+			//si ya se ha visitado, no lo comprobaremos
+		}
+		else
+		{
+			//si no se ha visitado, lo visitamos
+
+			//borramos el nodo de la frontera
+			nodos_frontera.erase(nodos_frontera.begin());
+
+			//comprobamos los vecinos de tal nodo y los añadimos a la frontera
+			//Seguimos el sentido horario
+			if (nodo->TopNeighbor != nullptr)
+			{
+				nodo->TopNeighbor->PreviousNode = nodo;
+				nodos_frontera.push_back(nodo->TopNeighbor);
+			}
+			if (nodo->RightNeighbor != nullptr)
+			{
+				nodo->RightNeighbor->PreviousNode = nodo;
+				nodos_frontera.push_back(nodo->RightNeighbor);
+			}
+			if (nodo->LeftNeighbor != nullptr)
+			{
+				nodo->LeftNeighbor->PreviousNode = nodo;
+				nodos_frontera.push_back(nodo->LeftNeighbor);
+			}
+			if (nodo->BottomNeighbor != nullptr)
+			{
+				nodo->BottomNeighbor->PreviousNode = nodo;
+				nodos_frontera.push_back(nodo->BottomNeighbor);
+			}
+		
+
+			//añadimos a la lista de visitados el nodo visitado
+			nodos_visitados.push_back(nodo);
+		}
+
+	}
+
+	for (int i = 0; i < maze_nodes.size(); i++)
+	{
+		for (int j = 0; j < maze_nodes[i].size(); j++)
+		{
+			maze_nodes[i][j]->id;
+		}
+	}
+
+		
+}
 
 bool SceneGreedyBFS::loadTextures(char* filename_bg, char* filename_coin)
 {

@@ -1,2 +1,13 @@
-﻿  SDL_Pathfinding.vcxproj -> C:\Users\Alumno\source\repos\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe
+﻿  SceneGreedyBFS.cpp
+c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(390): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(425): warning C4018: '<': signed/unsigned mismatch
+c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(427): warning C4018: '<': signed/unsigned mismatch
+  Node.cpp
+  Generating Code...
+  Compiling...
+  main.cpp
+  ScenePathFinding.cpp
+  Graph.cpp
+  Generating Code...
+  SDL_Pathfinding.vcxproj -> C:\Users\Alumno\source\repos\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe
   SDL_Pathfinding.vcxproj -> C:\Users\Alumno\source\repos\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.pdb (Partial PDB)

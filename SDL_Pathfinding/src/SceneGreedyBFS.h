@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <time.h>
+#include <algorithm>
 #include "Scene.h"
 #include "Agent.h"
 #include "Path.h"
@@ -37,8 +38,12 @@ private:
 	bool isValidCell(Vector2D cell);
 
 
-	
+	//nodos
 	std::vector< std::vector<Node*> >maze_nodes;
-
 	void initNodes();
+
+	//BFS
+	void Algorithm_BFS();
+	std::vector<Node*> nodos_frontera;
+	std::vector<Node*> nodos_visitados;
 };
