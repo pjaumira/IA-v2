@@ -17,6 +17,17 @@ SceneGreedyBFS::SceneGreedyBFS()
 	Agent *agent = new Agent;
 	agent->loadSpriteTexture("../res/soldier.png", 4);
 	agents.push_back(agent);
+	
+	//// set agent position coords to the center of a random cell
+	//Vector2D rand_cell(6, 3);
+	///*while (!isValidCell(rand_cell))
+	//	rand_cell = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));*/
+	//agents[0]->setPosition(cell2pix(rand_cell));
+
+	//// set the coin in a random cell (but at least 3 cells far from the agent)
+	//coinPosition = Vector2D(2, 2);
+	///*while ((!isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, rand_cell)<3))
+	//	coinPosition = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));*/
 
 
 	// set agent position coords to the center of a random cell
@@ -34,6 +45,9 @@ SceneGreedyBFS::SceneGreedyBFS()
 	currentTarget = Vector2D(0, 0);
 	currentTargetIndex = -1;
 
+	//calculamos la ruta óptima con BFS
+	Algorithm_BFS();
+
 }
 
 SceneGreedyBFS::~SceneGreedyBFS()
@@ -46,6 +60,14 @@ SceneGreedyBFS::~SceneGreedyBFS()
 	for (int i = 0; i < (int)agents.size(); i++)
 	{
 		delete agents[i];
+	}
+
+	for (int i = 0; i < num_cell_x; i++)
+	{
+		for (int j = 0; j < num_cell_y; j++)
+		{
+			delete maze_nodes[i][j];
+		}
 	}
 }
 
@@ -75,6 +97,10 @@ void SceneGreedyBFS::update(float dtime, SDL_Event *event)
 	default:
 		break;
 	}
+
+	//
+
+
 	if ((currentTargetIndex == -1) && (path.points.size()>0))
 		currentTargetIndex = 0;
 
@@ -300,7 +326,7 @@ for (int i = 0; i < num_cell_x; i++)
 	{
 		if (terrain[i][j] != 0)
 		{
-			Node *node = new Node(identificator);
+			Node *node = new Node(identificator, Vector2D(i,j));
 			maze_nodes[i][j] = node;
 			identificator++;
 		}
@@ -309,7 +335,6 @@ for (int i = 0; i < num_cell_x; i++)
 
 //ahora que tenemos una matriz rellena de nodos y espacios vacios, hay que linkear los nodos entre ellos
 
-//comprobamos si en la matriz hay un nodo
 for (int i = 0; i < num_cell_x; i++)
 {
 	for (int j = 0; j < num_cell_y; j++)
@@ -323,7 +348,7 @@ for (int i = 0; i < num_cell_x; i++)
 			if (i > 0)
 			{
 				//si hay un nodo, vinculamos el actual con el vecino de arriba
-				if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i - 1][j];
+				if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i - 1][j];
 			}
 			else
 			{
@@ -334,7 +359,7 @@ for (int i = 0; i < num_cell_x; i++)
 			if (i < num_cell_x - 1)
 			{
 				//si hay un nodo, vinculamos el actual con el vecino de abajo
-				if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i + 1][j];
+				if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i + 1][j];
 			}
 			else
 			{
@@ -345,7 +370,7 @@ for (int i = 0; i < num_cell_x; i++)
 			if (j > 0)
 			{
 				//si hay un nodo, vinculamos el actual con el vecino de la izquierda
-				if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i][j - 1];
+				if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i][j - 1];
 			}
 			else
 			{
@@ -356,7 +381,7 @@ for (int i = 0; i < num_cell_x; i++)
 			if (j < num_cell_y - 1)
 			{
 				//si hay un nodo, vinculamos el actual con el vecino de la derecha
-				if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i][j + 1];
+				if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i][j + 1];
 			}
 			else
 			{
@@ -384,66 +409,131 @@ maze_nodes[num_cell_x - 1][11]->RightNeighbor = maze_nodes[0][11];
 maze_nodes[num_cell_x - 1][12]->RightNeighbor = maze_nodes[0][12];
 }
 
+//función para checkear si un nodo concreto está contenido en el vector
+bool SceneGreedyBFS::CheckVector(Node* node, std::vector<Node*> vec) {
+	for (int i = 0; i < vec.size(); i++) {
+		if (vec[i] == node)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void SceneGreedyBFS::Algorithm_BFS()
 {
 	//inicializamos la frontera con la posición inicial del jugador
-	nodos_frontera.push_back(maze_nodes[agents[0]->getPosition().y][agents[0]->getPosition().x]); //cuidado con la X y la Y !!!!!!
+	nodos_frontera.push_back(maze_nodes[pix2cell(agents[0]->getPosition()).x][pix2cell(agents[0]->getPosition()).y]); //cuidado con la X y la Y !!!!!!
 
 	//mientras la frontera no este vacia...
 	while (nodos_frontera.size() != 0)
 	{
-		
+
 		//obtenemos el primer nodo de la frontera
 		Node* nodo = nodos_frontera.front();
 
-		//comprobamos que no ha sido visitado
-		if (std::find(nodos_visitados.begin(), nodos_visitados.end(), nodo) != nodos_visitados.end())
-		{
-			//si ya se ha visitado, no lo comprobaremos
-		}
-		else
-		{
-			//si no se ha visitado, lo visitamos
+//comprobamos si es el nodo destino
+if (nodo->position == coinPosition) //si no va, quiza probar comparando direccion de memoria con &?
+{
+	//si efectivamente es el nodo destino paramos el bucle
+	break;
+}
+else
+{
+	if (CheckVector(nodo, nodos_visitados))
+	{
+		//si ya se ha visitado, no lo comprobaremos. lo borramos.
+		nodos_frontera.erase(nodos_frontera.begin());
+	}
+	else
+	{
+		//si no se ha visitado, lo visitamos
 
-			//borramos el nodo de la frontera
-			nodos_frontera.erase(nodos_frontera.begin());
+		//borramos el nodo de la frontera
+		nodos_frontera.erase(nodos_frontera.begin());
 
-			//comprobamos los vecinos de tal nodo y los añadimos a la frontera
-			//Seguimos el sentido horario
-			if (nodo->TopNeighbor != nullptr)
+		//comprobamos los vecinos de tal nodo y los añadimos a la frontera
+		//Seguimos el sentido horario
+		if (nodo->TopNeighbor != nullptr)
+		{
+			//comprobamos que no ha sido visitado
+			if (CheckVector(nodo->TopNeighbor, nodos_visitados))
+			{
+				//si ya se ha visitado, no lo comprobaremos.
+			}
+			else
 			{
 				nodo->TopNeighbor->PreviousNode = nodo;
 				nodos_frontera.push_back(nodo->TopNeighbor);
 			}
-			if (nodo->RightNeighbor != nullptr)
+		}
+		if (nodo->RightNeighbor != nullptr)
+		{
+			//comprobamos que no ha sido visitado
+			if (CheckVector(nodo->RightNeighbor, nodos_visitados))
+			{
+				//si ya se ha visitado, no lo comprobaremos.
+			}
+			else
 			{
 				nodo->RightNeighbor->PreviousNode = nodo;
 				nodos_frontera.push_back(nodo->RightNeighbor);
 			}
-			if (nodo->LeftNeighbor != nullptr)
+		}
+		if (nodo->BottomNeighbor != nullptr)
+		{
+			//comprobamos que no ha sido visitado
+			if (CheckVector(nodo->BottomNeighbor, nodos_visitados))
 			{
-				nodo->LeftNeighbor->PreviousNode = nodo;
-				nodos_frontera.push_back(nodo->LeftNeighbor);
+				//si ya se ha visitado, no lo comprobaremos.
 			}
-			if (nodo->BottomNeighbor != nullptr)
+			else
 			{
 				nodo->BottomNeighbor->PreviousNode = nodo;
 				nodos_frontera.push_back(nodo->BottomNeighbor);
 			}
-		
-
-			//añadimos a la lista de visitados el nodo visitado
-			nodos_visitados.push_back(nodo);
 		}
+		if (nodo->LeftNeighbor != nullptr)
+		{
+			//comprobamos que no ha sido visitado
+			if (CheckVector(nodo->LeftNeighbor, nodos_visitados))
+			{
+				//si ya se ha visitado, no lo comprobaremos.
+			}
+			else
+			{
+				nodo->LeftNeighbor->PreviousNode = nodo;
+				nodos_frontera.push_back(nodo->LeftNeighbor);
+			}
+		}
+
+		//añadimos a la lista de visitados el nodo visitado
+		nodos_visitados.push_back(nodo);
+	}
+}
 
 	}
 
-	for (int i = 0; i < maze_nodes.size(); i++)
+	//el nodo destino es el primer nodo de la frontera
+	Node* nodo = nodos_frontera.front();
+	//añadimos al camino a recorrer el nodo destino
+	camino_a_recorrer.push_back(nodo);
+
+	//mientras no lleguemos al nodo origen
+	Vector2D pos = pix2cell(agents[0]->getPosition());
+	while (nodo->position != pos)
 	{
-		for (int j = 0; j < maze_nodes[i].size(); j++)
-		{
-			maze_nodes[i][j]->id;
-		}
+		//avanzamos al nodo padre
+		nodo = nodo->PreviousNode;
+		//lo añadimos al camino a recorrer
+		camino_a_recorrer.push_back(nodo);
+	}
+	//cuando salga tendremos un vector con el camino a recorrer invertido
+
+	//añadimos al vector path.points el recorrido que debe hacer el agente, ordenado
+	for (int i = 0; i < camino_a_recorrer.size(); i++)
+	{
+		path.points.insert(path.points.begin(), cell2pix(camino_a_recorrer[i]->position));
 	}
 
 		

@@ -5,12 +5,13 @@ class Node {
 public:
 	Node();
 	Node(int identificator);
-	//Node(int identificator, Vector2D pos);
+	Node(int identificator, Vector2D pos);
 	~Node();
 
 	int cost;
+	int AccCost;
 	int id;
-//	Vector2D position;
+	Vector2D position;
 
 	Node* RightNeighbor;
 	Node* LeftNeighbor;

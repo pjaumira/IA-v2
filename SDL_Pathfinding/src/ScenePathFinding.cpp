@@ -20,14 +20,14 @@ ScenePathFinding::ScenePathFinding()
 
 
 	// set agent position coords to the center of a random cell
-	Vector2D rand_cell(-1,-1);
-	while (!isValidCell(rand_cell)) 
+	Vector2D rand_cell(-1, -1);
+	while (!isValidCell(rand_cell))
 		rand_cell = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
 	agents[0]->setPosition(cell2pix(rand_cell));
 
 	// set the coin in a random cell (but at least 3 cells far from the agent)
-	coinPosition = Vector2D(-1,-1);
-	while ((!isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, rand_cell)<3)) 
+	coinPosition = Vector2D(-1, -1);
+	while ((!isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, rand_cell)<3))
 		coinPosition = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
 	
 	// PathFollowing next Target

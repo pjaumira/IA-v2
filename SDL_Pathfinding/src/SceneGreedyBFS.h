@@ -41,9 +41,12 @@ private:
 	//nodos
 	std::vector< std::vector<Node*> >maze_nodes;
 	void initNodes();
+	bool CheckVector(Node* node, std::vector<Node*> vec);
 
 	//BFS
-	void Algorithm_BFS();
 	std::vector<Node*> nodos_frontera;
 	std::vector<Node*> nodos_visitados;
+	std::vector<Node*> camino_a_recorrer;
+	void Algorithm_BFS();
+
 };
