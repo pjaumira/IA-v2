@@ -124,8 +124,32 @@ void ScenePathFinding::update(float dtime, SDL_Event *event)
 	} 
 	else
 	{
-		agents[0]->update(Vector2D(0,0), dtime, event);
+		Restart();
+		//agents[0]->update(Vector2D(0,0), dtime, event);
 	}
+}
+void ScenePathFinding::Restart()
+{
+	// set agent position coords to the center of a random cell
+	Vector2D rand_cell(-1, -1);
+	while (!isValidCell(rand_cell))
+		rand_cell = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
+	agents[0]->setPosition(cell2pix(rand_cell));
+
+	// set the coin in a random cell (but at least 3 cells far from the agent)
+	coinPosition = Vector2D(-1, -1);
+	while ((!isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, rand_cell)<3))
+		coinPosition = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
+
+	// PathFollowing next Target
+	currentTarget = Vector2D(0, 0);
+	currentTargetIndex = -1;
+
+	//calculamos la ruta óptima con BFS
+	nodos_frontera.clear();
+	nodos_visitados.clear();
+	camino_a_recorrer.clear();
+	Algorithm_BFS();
 }
 
 void ScenePathFinding::draw()
@@ -511,7 +535,6 @@ void ScenePathFinding::Algorithm_BFS()
 		camino_a_recorrer.push_back(nodo);
 	}
 	//cuando salga tendremos un vector con el camino a recorrer invertido
-
 	//añadimos al vector path.points el recorrido que debe hacer el agente, ordenado
 	for (int i = 0; i < camino_a_recorrer.size(); i++)
 	{

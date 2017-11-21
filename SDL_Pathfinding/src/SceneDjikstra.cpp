@@ -140,8 +140,39 @@ void SceneDjikstra::update(float dtime, SDL_Event *event)
 	}
 	else
 	{
-		agents[0]->update(Vector2D(0, 0), dtime, event);
+		//agents[0]->update(Vector2D(0, 0), dtime, event);
+		Restart();
 	}
+}
+
+void SceneDjikstra::Restart()
+{
+	// set agent position coords to the center of a random cell
+	Vector2D rand_cell(-1, -1);
+	while (!isValidCell(rand_cell))
+		rand_cell = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
+	agents[0]->setPosition(cell2pix(rand_cell));
+
+	// set the coin in a random cell (but at least 3 cells far from the agent)
+	coinPosition = Vector2D(-1, -1);
+	while ((!isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, rand_cell)<3))
+		coinPosition = Vector2D((float)(rand() % num_cell_x), (float)(rand() % num_cell_y));
+
+	// PathFollowing next Target
+	currentTarget = Vector2D(0, 0);
+	currentTargetIndex = -1;
+
+	//calculamos la ruta óptima con BFS
+	if (!nodos_frontera.empty())
+	{
+		while (nodos_frontera.size()>0)
+		{
+			nodos_frontera.pop();
+		}
+	}
+	nodos_visitados.clear();
+	camino_a_recorrer.clear();
+	Algorithm_Djisktra();
 }
 
 void SceneDjikstra::draw()

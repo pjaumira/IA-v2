@@ -1,0 +1,23 @@
+﻿  utils.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\utils.cpp(5): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  main.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\main.cpp(2): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SteeringBehavior.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\agent.h(4): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SceneRandomPoints.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  ScenePathFinding.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SceneGreedyBFS.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SceneDjikstra.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SceneAdversaris.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SceneAEstrella.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scene.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  SDL_SimpleApp.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sdl_simpleapp.h(3): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Agent.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\agent.h(4): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Generating Code...

@@ -51,5 +51,6 @@ private:
 	std::vector<Node*> nodos_visitados;
 	std::vector<Node*> camino_a_recorrer;
 	void Algorithm_Djisktra();
+	void Restart();
 
 };
