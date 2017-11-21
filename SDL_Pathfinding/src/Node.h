@@ -10,6 +10,7 @@ public:
 
 	int cost;
 	int AccCost;
+	int heuristicCost;
 	int id;
 	Vector2D position;
 

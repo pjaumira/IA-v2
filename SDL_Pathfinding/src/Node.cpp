@@ -3,6 +3,7 @@
 Node::Node() {
 	cost = 1;
 	AccCost = 0;
+	heuristicCost = 0;
 	id = 0;
 	position = Vector2D(0, 0);
 	RightNeighbor = nullptr;
@@ -16,6 +17,7 @@ Node::Node(int identificator, Vector2D pos) {
 //Node::Node(int identificator) {
 	cost = 1;
 	AccCost = 0;
+	heuristicCost = 0;
 	id = identificator;
 	position = pos;
 	RightNeighbor = nullptr;

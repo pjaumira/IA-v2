@@ -1,21 +1,8 @@
-﻿  SceneDjikstra.cpp
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(329): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(414): warning C4018: '<': signed/unsigned mismatch
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(428): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(429): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(553): warning C4018: '<': signed/unsigned mismatch
-  Node.cpp
-  Generating Code...
-  Compiling...
-  ScenePathFinding.cpp
-  SceneGreedyBFS.cpp
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(329): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(414): warning C4018: '<': signed/unsigned mismatch
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(426): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumno\source\repos\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(534): warning C4018: '<': signed/unsigned mismatch
-  Graph.cpp
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  main.cpp
-  SDL_Pathfinding.vcxproj -> C:\Users\Alumno\source\repos\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe
-  SDL_Pathfinding.vcxproj -> C:\Users\Alumno\source\repos\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.pdb (Partial PDB)
+﻿  SceneGreedyBFS.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(329): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(414): warning C4018: '<': signed/unsigned mismatch
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(428): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(429): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(553): warning C4018: '<': signed/unsigned mismatch
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenegreedybfs.cpp(564): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  SDL_Pathfinding.vcxproj -> C:\Users\alumne\Desktop\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe

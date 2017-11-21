@@ -46,7 +46,7 @@ private:
 	void initNodes();
 	bool CheckVector(Node* node, std::vector<Node*> vec);
 
-	//BFS
+	//Djikstra
 	std::priority_queue<std::pair<int, Node*>, std::vector<std::pair<int, Node*>>, std::greater<std::pair<int, Node*>>> nodos_frontera;
 	std::vector<Node*> nodos_visitados;
 	std::vector<Node*> camino_a_recorrer;

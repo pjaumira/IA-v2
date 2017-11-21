@@ -46,7 +46,7 @@ SceneGreedyBFS::SceneGreedyBFS()
 	currentTargetIndex = -1;
 
 	//calculamos la ruta óptima con BFS
-	Algorithm_BFS();
+	Algorithm_GreedyBFS();
 
 }
 
@@ -317,96 +317,96 @@ void SceneGreedyBFS::initNodes() {
 	/*Node *node = new Node;
 	maze_nodes[2][3] = node;*/
 
-//ahora que tenemos una matriz del tamaño del mapa, añadimos nodos allá donde no haya muros
-//cada vez que creamos un nodo le añadimos un número identificativo único
-int identificator = 1;  //empezamos por el identificador 1
-for (int i = 0; i < num_cell_x; i++)
-{
-	for (int j = 0; j < num_cell_y; j++)
+	//ahora que tenemos una matriz del tamaño del mapa, añadimos nodos allá donde no haya muros
+	//cada vez que creamos un nodo le añadimos un número identificativo único
+	int identificator = 1;  //empezamos por el identificador 1
+	for (int i = 0; i < num_cell_x; i++)
 	{
-		if (terrain[i][j] != 0)
+		for (int j = 0; j < num_cell_y; j++)
 		{
-			Node *node = new Node(identificator, Vector2D(i,j));
-			maze_nodes[i][j] = node;
-			identificator++;
+			if (terrain[i][j] != 0)
+			{
+				Node *node = new Node(identificator, Vector2D(i, j));
+				maze_nodes[i][j] = node;
+				identificator++;
+			}
 		}
 	}
-}
 
-//ahora que tenemos una matriz rellena de nodos y espacios vacios, hay que linkear los nodos entre ellos
+	//ahora que tenemos una matriz rellena de nodos y espacios vacios, hay que linkear los nodos entre ellos
 
-for (int i = 0; i < num_cell_x; i++)
-{
-	for (int j = 0; j < num_cell_y; j++)
+	for (int i = 0; i < num_cell_x; i++)
 	{
-		//primero de todo, comprobamos si la casilla en cuestión es un nodo o una pared
-		if (maze_nodes[i][j] != nullptr)
+		for (int j = 0; j < num_cell_y; j++)
 		{
-			//ahora comprobaremos si el nodo tiene vecinos. Si los tiene los vincularemos al nodo
-
-			//COMPROBAMOS ARRIBA
-			if (i > 0)
+			//primero de todo, comprobamos si la casilla en cuestión es un nodo o una pared
+			if (maze_nodes[i][j] != nullptr)
 			{
-				//si hay un nodo, vinculamos el actual con el vecino de arriba
-				if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i - 1][j];
+				//ahora comprobaremos si el nodo tiene vecinos. Si los tiene los vincularemos al nodo
+
+				//COMPROBAMOS ARRIBA
+				if (i > 0)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de arriba
+					if (maze_nodes[i - 1][j] != nullptr) maze_nodes[i][j]->LeftNeighbor = maze_nodes[i - 1][j];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo superior, no haremos nada
+				}
+
+				//COMPROBAMOS ABAJO
+				if (i < num_cell_x - 1)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de abajo
+					if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i + 1][j];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo inferior, no haremos nada
+				}
+
+				//COMPROBAMOS IZQUIERDA
+				if (j > 0)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de la izquierda
+					if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i][j - 1];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo a la izquierda, no haremos nada
+				}
+
+				//COMPROBAMOS DERECHA
+				if (j < num_cell_y - 1)
+				{
+					//si hay un nodo, vinculamos el actual con el vecino de la derecha
+					if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i][j + 1];
+				}
+				else
+				{
+					//si sale 0 es que no existe nodo a la derecha, no haremos nada
+				}
 			}
 			else
 			{
-				//si sale 0 es que no existe nodo superior, no haremos nada
+				//si es un muro no haremos nada
 			}
-
-			//COMPROBAMOS ABAJO
-			if (i < num_cell_x - 1)
-			{
-				//si hay un nodo, vinculamos el actual con el vecino de abajo
-				if (maze_nodes[i + 1][j] != nullptr) maze_nodes[i][j]->RightNeighbor = maze_nodes[i + 1][j];
-			}
-			else
-			{
-				//si sale 0 es que no existe nodo inferior, no haremos nada
-			}
-
-			//COMPROBAMOS IZQUIERDA
-			if (j > 0)
-			{
-				//si hay un nodo, vinculamos el actual con el vecino de la izquierda
-				if (maze_nodes[i][j - 1] != nullptr) maze_nodes[i][j]->TopNeighbor = maze_nodes[i][j - 1];
-			}
-			else
-			{
-				//si sale 0 es que no existe nodo a la izquierda, no haremos nada
-			}
-
-			//COMPROBAMOS DERECHA
-			if (j < num_cell_y - 1)
-			{
-				//si hay un nodo, vinculamos el actual con el vecino de la derecha
-				if (maze_nodes[i][j + 1] != nullptr) maze_nodes[i][j]->BottomNeighbor = maze_nodes[i][j + 1];
-			}
-			else
-			{
-				//si sale 0 es que no existe nodo a la derecha, no haremos nada
-			}
-		}
-		else
-		{
-			//si es un muro no haremos nada
 		}
 	}
-}
 
-//deberiamos tener todos los nodos linkeados entre ellos
-//Solo faltara linkear los nodos excepcionales que forman el tunel
+	//deberiamos tener todos los nodos linkeados entre ellos
+	//Solo faltara linkear los nodos excepcionales que forman el tunel
 
-//linkeamos la entrada de la izquierda
-maze_nodes[0][10]->LeftNeighbor = maze_nodes[num_cell_x - 1][10];
-maze_nodes[0][11]->LeftNeighbor = maze_nodes[num_cell_x - 1][11];
-maze_nodes[0][12]->LeftNeighbor = maze_nodes[num_cell_x - 1][12];
+	//linkeamos la entrada de la izquierda
+	maze_nodes[0][10]->LeftNeighbor = maze_nodes[num_cell_x - 1][10];
+	maze_nodes[0][11]->LeftNeighbor = maze_nodes[num_cell_x - 1][11];
+	maze_nodes[0][12]->LeftNeighbor = maze_nodes[num_cell_x - 1][12];
 
-//linkeamos la entrada de la derecha
-maze_nodes[num_cell_x - 1][10]->RightNeighbor = maze_nodes[0][10];
-maze_nodes[num_cell_x - 1][11]->RightNeighbor = maze_nodes[0][11];
-maze_nodes[num_cell_x - 1][12]->RightNeighbor = maze_nodes[0][12];
+	//linkeamos la entrada de la derecha
+	maze_nodes[num_cell_x - 1][10]->RightNeighbor = maze_nodes[0][10];
+	maze_nodes[num_cell_x - 1][11]->RightNeighbor = maze_nodes[0][11];
+	maze_nodes[num_cell_x - 1][12]->RightNeighbor = maze_nodes[0][12];
 }
 
 //función para checkear si un nodo concreto está contenido en el vector
@@ -420,102 +420,121 @@ bool SceneGreedyBFS::CheckVector(Node* node, std::vector<Node*> vec) {
 	return false;
 }
 
-void SceneGreedyBFS::Algorithm_BFS()
+void SceneGreedyBFS::Algorithm_GreedyBFS()
 {
 	//inicializamos la frontera con la posición inicial del jugador
-	nodos_frontera.push_back(maze_nodes[pix2cell(agents[0]->getPosition()).x][pix2cell(agents[0]->getPosition()).y]); //cuidado con la X y la Y !!!!!!
+	//para ello lo convertimos a pair (para que se nos auto ordene usando las priority_queues)
+	std::pair <int, Node*> element(
+		maze_nodes[pix2cell(agents[0]->getPosition()).x][pix2cell(agents[0]->getPosition()).y]->heuristicCost,
+		maze_nodes[pix2cell(agents[0]->getPosition()).x][pix2cell(agents[0]->getPosition()).y]);
+
+	nodos_frontera.push(element);
 
 	//mientras la frontera no este vacia...
 	while (nodos_frontera.size() != 0)
 	{
 
 		//obtenemos el primer nodo de la frontera
-		Node* nodo = nodos_frontera.front();
+		//element = nodos_frontera.top();
+		Node* nodo = nodos_frontera.top().second;
 
-//comprobamos si es el nodo destino
-if (nodo->position == coinPosition) //si no va, quiza probar comparando direccion de memoria con &?
-{
-	//si efectivamente es el nodo destino paramos el bucle
-	break;
-}
-else
-{
-	if (CheckVector(nodo, nodos_visitados))
-	{
-		//si ya se ha visitado, no lo comprobaremos. lo borramos.
-		nodos_frontera.erase(nodos_frontera.begin());
-	}
-	else
-	{
-		//si no se ha visitado, lo visitamos
-
-		//borramos el nodo de la frontera
-		nodos_frontera.erase(nodos_frontera.begin());
-
-		//comprobamos los vecinos de tal nodo y los añadimos a la frontera
-		//Seguimos el sentido horario
-		if (nodo->TopNeighbor != nullptr)
+		//comprobamos si es el nodo destino
+		if (nodo->position == coinPosition) //si no va, quiza probar comparando direccion de memoria con &?
 		{
-			//comprobamos que no ha sido visitado
-			if (CheckVector(nodo->TopNeighbor, nodos_visitados))
+			//si efectivamente es el nodo destino paramos el bucle
+			break;
+		}
+		else
+		{
+			if (CheckVector(nodo, nodos_visitados))
 			{
-				//si ya se ha visitado, no lo comprobaremos.
+				//si ya se ha visitado, no lo comprobaremos. lo borramos.
+				nodos_frontera.pop();
 			}
 			else
 			{
-				nodo->TopNeighbor->PreviousNode = nodo;
-				nodos_frontera.push_back(nodo->TopNeighbor);
-			}
-		}
-		if (nodo->RightNeighbor != nullptr)
-		{
-			//comprobamos que no ha sido visitado
-			if (CheckVector(nodo->RightNeighbor, nodos_visitados))
-			{
-				//si ya se ha visitado, no lo comprobaremos.
-			}
-			else
-			{
-				nodo->RightNeighbor->PreviousNode = nodo;
-				nodos_frontera.push_back(nodo->RightNeighbor);
-			}
-		}
-		if (nodo->BottomNeighbor != nullptr)
-		{
-			//comprobamos que no ha sido visitado
-			if (CheckVector(nodo->BottomNeighbor, nodos_visitados))
-			{
-				//si ya se ha visitado, no lo comprobaremos.
-			}
-			else
-			{
-				nodo->BottomNeighbor->PreviousNode = nodo;
-				nodos_frontera.push_back(nodo->BottomNeighbor);
-			}
-		}
-		if (nodo->LeftNeighbor != nullptr)
-		{
-			//comprobamos que no ha sido visitado
-			if (CheckVector(nodo->LeftNeighbor, nodos_visitados))
-			{
-				//si ya se ha visitado, no lo comprobaremos.
-			}
-			else
-			{
-				nodo->LeftNeighbor->PreviousNode = nodo;
-				nodos_frontera.push_back(nodo->LeftNeighbor);
-			}
-		}
+				//si no se ha visitado, lo visitamos
 
-		//añadimos a la lista de visitados el nodo visitado
-		nodos_visitados.push_back(nodo);
-	}
-}
+				//borramos el nodo de la frontera
+				nodos_frontera.pop();
+
+				//comprobamos los vecinos de tal nodo y los añadimos a la frontera
+				//Seguimos el sentido horario
+				if (nodo->TopNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->TopNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->TopNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->TopNeighbor->heuristicCost = HeuristicCost(nodo->TopNeighbor);
+						nodos_frontera.push(std::pair <int, Node*>(nodo->TopNeighbor->heuristicCost, nodo->TopNeighbor));
+					}
+				}
+				if (nodo->RightNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->RightNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->RightNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->RightNeighbor->heuristicCost = HeuristicCost(nodo->RightNeighbor);
+						nodos_frontera.push(std::pair <int, Node*>(nodo->RightNeighbor->heuristicCost, nodo->RightNeighbor));
+					}
+				}
+				if (nodo->BottomNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->BottomNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->BottomNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->BottomNeighbor->heuristicCost = HeuristicCost(nodo->BottomNeighbor);
+						nodos_frontera.push(std::pair <int, Node*>(nodo->BottomNeighbor->heuristicCost, nodo->BottomNeighbor));
+					}
+				}
+				if (nodo->LeftNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->LeftNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->LeftNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->LeftNeighbor->heuristicCost = HeuristicCost(nodo->LeftNeighbor);
+						nodos_frontera.push(std::pair <int, Node*>(nodo->LeftNeighbor->heuristicCost, nodo->LeftNeighbor));
+					}
+				}
+
+				//añadimos a la lista de visitados el nodo visitado
+				nodos_visitados.push_back(nodo);
+			}
+		}
 
 	}
 
 	//el nodo destino es el primer nodo de la frontera
-	Node* nodo = nodos_frontera.front();
+	Node* nodo = nodos_frontera.top().second;
 	//añadimos al camino a recorrer el nodo destino
 	camino_a_recorrer.push_back(nodo);
 
@@ -536,7 +555,13 @@ else
 		path.points.insert(path.points.begin(), cell2pix(camino_a_recorrer[i]->position));
 	}
 
-		
+
+}
+int SceneGreedyBFS::HeuristicCost(Node* actual)
+{
+	Vector2D v = actual->position- coinPosition;
+	v.Normalize();
+	return (v.x+v.y)/2;
 }
 
 bool SceneGreedyBFS::loadTextures(char* filename_bg, char* filename_coin)
