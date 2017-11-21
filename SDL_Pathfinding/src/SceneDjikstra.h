@@ -50,6 +50,7 @@ private:
 	std::priority_queue<std::pair<int, Node*>, std::vector<std::pair<int, Node*>>, std::greater<std::pair<int, Node*>>> nodos_frontera;
 	std::vector<Node*> nodos_visitados;
 	std::vector<Node*> camino_a_recorrer;
+	std::vector<SDL_Rect> terreno_pantanoso;
 	void Algorithm_Djisktra();
 	void Restart();
 

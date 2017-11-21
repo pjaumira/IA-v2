@@ -1,1 +1,8 @@
-﻿  SDL_Pathfinding.vcxproj -> C:\Users\alumne\Desktop\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe
+﻿  SceneDjikstra.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(316): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(379): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(465): warning C4018: '<': signed/unsigned mismatch
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(479): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(480): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.cpp(604): warning C4018: '<': signed/unsigned mismatch
+  SDL_Pathfinding.vcxproj -> C:\Users\alumne\Desktop\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe

@@ -215,10 +215,15 @@ void SceneDjikstra::drawMaze()
 {
 	if (draw_grid)
 	{
+		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 104, 59, 16, 255);
+		for (unsigned int i = 0; i < terreno_pantanoso.size(); i++)
+			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &terreno_pantanoso[i]);
 
 		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
 		for (unsigned int i = 0; i < maze_rects.size(); i++)
 			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &maze_rects[i]);
+
+		
 	}
 	else
 	{
@@ -308,11 +313,25 @@ void SceneDjikstra::initMaze()
 	maze_rects.push_back(rect);
 
 	// Initialize the terrain matrix (for each cell a zero value indicates it's a wall)
+	srand(time(NULL));
 
 	// (1st) initialize all cells to 1 by default
 	for (int i = 0; i < num_cell_x; i++)
 	{
-		vector<int> terrain_col(num_cell_y, 1);
+		vector<int> terrain_col;
+		for (int j = 0; j < num_cell_y; j++)
+		{
+			int ran; 
+			ran = rand() % 10;
+			if (ran == 2)
+			{
+				SDL_Rect r = {i*32,j*32,32,32 };
+				terreno_pantanoso.push_back(r);
+			}
+			else ran = 1;
+			terrain_col.push_back(ran);
+		}
+		//vector<int> terrain_col(num_cell_y, rand()+1);
 		terrain.push_back(terrain_col);
 	}
 	// (2nd) set to zero all cells that belong to a wall
@@ -358,6 +377,7 @@ void SceneDjikstra::initNodes() {
 			if (terrain[i][j] != 0)
 			{
 				Node *node = new Node(identificator, Vector2D(i, j));
+				node->cost = 3;
 				maze_nodes[i][j] = node;
 				identificator++;
 			}
