@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
 			if (event.key.keysym.scancode == SDL_SCANCODE_4)
 			{
 				delete(curr_scene);
-				//curr_scene = new SceneAEstrella;
+				curr_scene = new SceneAEstrella;
 				app->setWindowTitle(curr_scene->getTitle());
 			}
 			if (event.key.keysym.scancode == SDL_SCANCODE_5)

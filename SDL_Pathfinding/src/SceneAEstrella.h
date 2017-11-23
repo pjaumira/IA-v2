@@ -1,11 +1,16 @@
 #pragma once
 #include <vector>
 #include <time.h>
+#include <algorithm>
+#include <utility>
+#include <queue>
+#include <functional>
 #include "Scene.h"
 #include "Agent.h"
 #include "Path.h"
+#include "Node.h"
 
-class SceneAEstrella:
+class SceneAEstrella :
 	public Scene
 {
 public:
@@ -34,5 +39,20 @@ private:
 	Vector2D cell2pix(Vector2D cell);
 	Vector2D pix2cell(Vector2D pix);
 	bool isValidCell(Vector2D cell);
+
+
+	//nodos
+	std::vector< std::vector<Node*> >maze_nodes;
+	void initNodes();
+	bool CheckVector(Node* node, std::vector<Node*> vec);
+	int HeuristicCost(Node* actual);
+
+	//Djikstra
+	std::priority_queue<std::pair<int, Node*>, std::vector<std::pair<int, Node*>>, std::greater<std::pair<int, Node*>>> nodos_frontera;
+	std::vector<Node*> nodos_visitados;
+	std::vector<Node*> camino_a_recorrer;
+	std::vector<SDL_Rect> terreno_pantanoso;
+	void Algorithm_Djisktra();
+	void Restart();
 
 };
