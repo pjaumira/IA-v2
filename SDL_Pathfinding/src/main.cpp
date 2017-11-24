@@ -8,6 +8,7 @@
 #include "SceneDjikstra.h"
 #include "SceneGreedyBFS.h"
 #include "SceneAEstrella.h"
+#include "SceneAEstrellaRandomPosicio.h"
 
 //Exercici 2
 #include  "SceneRandomPoints.h"
@@ -74,14 +75,14 @@ int main(int argc, char ** argv)
 			if (event.key.keysym.scancode == SDL_SCANCODE_5)
 			{
 				delete(curr_scene);
-				//curr_scene = new SceneRandomPoints;
+				curr_scene = new SceneAEstrellaRandom;
 				app->setWindowTitle(curr_scene->getTitle());
 			}
 			if (event.key.keysym.scancode == SDL_SCANCODE_6)
 			{
 				delete(curr_scene);
 				//curr_scene = new SceneAdversaris;
-				app->setWindowTitle(curr_scene->getTitle());
+				//app->setWindowTitle(curr_scene->getTitle());
 			}
 			if ((event.key.keysym.scancode == SDL_SCANCODE_Q) || (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE))
 			{

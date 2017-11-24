@@ -137,6 +137,7 @@
     <ClCompile Include="..\src\Node.cpp" />
     <ClCompile Include="..\src\SceneAdversaris.cpp" />
     <ClCompile Include="..\src\SceneAEstrella.cpp" />
+    <ClCompile Include="..\src\SceneAEstrellaRandomPosicio.cpp" />
     <ClCompile Include="..\src\SceneDjikstra.cpp" />
     <ClCompile Include="..\src\SceneGreedyBFS.cpp" />
     <ClCompile Include="..\src\ScenePathFinding.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="..\src\Path.h" />
     <ClInclude Include="..\src\SceneAdversaris.h" />
     <ClInclude Include="..\src\SceneAEstrella.h" />
+    <ClInclude Include="..\src\SceneAEstrellaRandomPosicio.h" />
     <ClInclude Include="..\src\SceneDjikstra.h" />
     <ClInclude Include="..\src\SceneGreedyBFS.h" />
     <ClInclude Include="..\src\ScenePathFinding.h" />

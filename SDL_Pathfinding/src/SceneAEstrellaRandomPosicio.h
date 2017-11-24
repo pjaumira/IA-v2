@@ -12,12 +12,12 @@
 
 #define BARRO 5
 #define CESPED 3
-class SceneAEstrella :
+class SceneAEstrellaRandom :
 	public Scene
 {
 public:
-	SceneAEstrella();
-	~SceneAEstrella();
+	SceneAEstrellaRandom();
+	~SceneAEstrellaRandom();
 	void update(float dtime, SDL_Event *event);
 	void draw();
 	const char* getTitle();
@@ -55,7 +55,11 @@ private:
 	std::vector<Node*> camino_a_recorrer;
 	std::vector<SDL_Rect> terreno_pantanoso;
 	std::vector<SDL_Rect> terreno_cesped;
+	std::vector<SDL_Rect> puntos_pasar;
+	int points = 1;
 	void Algorithm_Djisktra();
+	void Algorithm_Djisktra(Vector2D startPosition, Vector2D endPosition);
+	void Algorithm_Aasterisk(Vector2D agentPosition);
 	void Restart();
 
 };

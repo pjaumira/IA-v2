@@ -1,29 +1,6 @@
-﻿  SceneAEstrella.cpp
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(161): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(165): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(171): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(175): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(180): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(225): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(378): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(495): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(581): warning C4018: '<': signed/unsigned mismatch
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(595): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(596): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(729): warning C4018: '<': signed/unsigned mismatch
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(743): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(744): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.cpp(877): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  utils.cpp
-  SteeringBehavior.cpp
-  SceneRandomPoints.cpp
-  ScenePathFinding.cpp
-  SceneGreedyBFS.cpp
-  SceneAdversaris.cpp
-  SDL_SimpleApp.cpp
-  Node.cpp
-  Graph.cpp
-  Agent.cpp
+﻿  main.cpp
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.h(13): warning C4005: 'BARRO': macro redefinition
+  c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.h(13): note: see previous definition of 'BARRO'
+c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\sceneaestrella.h(14): warning C4005: 'CESPED': macro redefinition
+  c:\users\alumne\desktop\ia-v2\sdl_pathfinding\src\scenedjikstra.h(14): note: see previous definition of 'CESPED'
   SDL_Pathfinding.vcxproj -> C:\Users\alumne\Desktop\IA-v2\SDL_Pathfinding\\bin\SDL_Pathfinding.exe

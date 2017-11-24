@@ -1,8 +1,8 @@
-#include "SceneAEstrella.h"
+#include "SceneAEstrellaRandomPosicio.h"
 
 using namespace std;
 
-SceneAEstrella::SceneAEstrella()
+SceneAEstrellaRandom::SceneAEstrellaRandom()
 {
 	draw_grid = true;
 
@@ -46,11 +46,13 @@ SceneAEstrella::SceneAEstrella()
 	currentTargetIndex = -1;
 
 	//calculamos la ruta óptima con Djisktra y heuristica.
-	Algorithm_Djisktra();
+	//rand_cell es la posición del agente.
+	Algorithm_Aasterisk(rand_cell);
+	//Algorithm_Djisktra();
 
 }
 
-SceneAEstrella::~SceneAEstrella()
+SceneAEstrellaRandom::~SceneAEstrellaRandom()
 {
 	if (background_texture)
 		SDL_DestroyTexture(background_texture);
@@ -71,7 +73,7 @@ SceneAEstrella::~SceneAEstrella()
 	}
 }
 
-void SceneAEstrella::update(float dtime, SDL_Event *event)
+void SceneAEstrellaRandom::update(float dtime, SDL_Event *event)
 {
 	/* Keyboard & Mouse events */
 	switch (event->type) {
@@ -141,11 +143,52 @@ void SceneAEstrella::update(float dtime, SDL_Event *event)
 	}
 	else
 	{
-		Restart();
+		//Limpiamos las listas
+		if (!nodos_frontera.empty())
+		{
+			while (nodos_frontera.size()>0)
+			{
+				nodos_frontera.pop();
+			}
+		}
+		nodos_visitados.clear();
+		camino_a_recorrer.clear();
+
+		//Miramos cual es el siguiente punto. Con un orden concreto.
+		switch (points)
+		{
+		case 1:
+			Algorithm_Djisktra(Vector2D(puntos_pasar[0].x / 32, puntos_pasar[0].y / 32), Vector2D(puntos_pasar[1].x / 32, puntos_pasar[1].y / 32));
+			points++;
+			break;
+		case 2:
+			Algorithm_Djisktra(Vector2D(puntos_pasar[1].x / 32, puntos_pasar[1].y / 32), Vector2D(puntos_pasar[2].x / 32, puntos_pasar[2].y / 32));
+			points++;
+			break;
+		case 3:
+			if (puntos_pasar.size() > 3)
+			{
+				Algorithm_Djisktra(Vector2D(puntos_pasar[2].x / 32, puntos_pasar[2].y / 32), Vector2D(puntos_pasar[3].x / 32, puntos_pasar[3].y / 32));
+			}
+			else
+			{
+				Algorithm_Djisktra(Vector2D(puntos_pasar[2].x / 32, puntos_pasar[2].y / 32), coinPosition);
+			}
+			points++;
+			break;
+		case 4:
+			if (puntos_pasar.size() > 3)Algorithm_Djisktra(Vector2D(puntos_pasar[3].x / 32, puntos_pasar[3].y / 32), coinPosition);
+			points++;
+			break;
+		case 5:
+			Restart();
+			break;
+
+		}
 	}
 }
 
-void SceneAEstrella::Restart()
+void SceneAEstrellaRandom::Restart()
 {
 	// set agent position coords to the center of a random cell
 	Vector2D rand_cell(-1, -1);
@@ -172,10 +215,17 @@ void SceneAEstrella::Restart()
 	}
 	nodos_visitados.clear();
 	camino_a_recorrer.clear();
-	Algorithm_Djisktra();
+	points = 1;
+	//rand_cell es la posición del agente.
+	Algorithm_Aasterisk(rand_cell);
+	//Algorithm_Djisktra();
+}
+void SceneAEstrellaRandom::Algorithm_Aasterisk(Vector2D agentPosition)
+{
+	Algorithm_Djisktra(agentPosition, Vector2D(puntos_pasar[0].x / 32, puntos_pasar[0].y / 32));
 }
 
-void SceneAEstrella::draw()
+void SceneAEstrellaRandom::draw()
 {
 	drawMaze();
 	drawCoin();
@@ -206,12 +256,12 @@ void SceneAEstrella::draw()
 	agents[0]->draw();
 }
 
-const char* SceneAEstrella::getTitle()
+const char* SceneAEstrellaRandom::getTitle()
 {
 	return "SDL Steering Behaviors :: PathFinding1 Demo";
 }
 
-void SceneAEstrella::drawMaze()
+void SceneAEstrellaRandom::drawMaze()
 {
 	if (draw_grid)
 	{
@@ -224,6 +274,11 @@ void SceneAEstrella::drawMaze()
 		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 100, 0, 255);
 		for (unsigned int i = 0; i < terreno_cesped.size(); i++)
 			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &terreno_cesped[i]);
+
+		//Pintar los objetivos previos a la moneda.
+		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 100, 0, 100, 255);
+		for (unsigned int i = 0; i < puntos_pasar.size(); i++)
+			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &puntos_pasar[i]);
 
 		//Pintar los bordes.
 		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
@@ -238,7 +293,7 @@ void SceneAEstrella::drawMaze()
 	}
 }
 
-void SceneAEstrella::drawCoin()
+void SceneAEstrellaRandom::drawCoin()
 {
 	Vector2D coin_coords = cell2pix(coinPosition);
 	int offset = CELL_SIZE / 2;
@@ -246,7 +301,7 @@ void SceneAEstrella::drawCoin()
 	SDL_RenderCopy(TheApp::Instance()->getRenderer(), coin_texture, NULL, &dstrect);
 }
 
-void SceneAEstrella::initMaze()
+void SceneAEstrellaRandom::initMaze()
 {
 
 	// Initialize a list of Rectagles describing the maze geometry (useful for collision avoidance)
@@ -361,27 +416,35 @@ void SceneAEstrella::initMaze()
 			else if (i == 6 && j > 0 && i < num_cell_x - 1 && ran == 4 && entra)
 			{
 				SDL_Rect r = { i * 32,j * 32,32,32 };
+				//path.points.push_back(Vector2D(r.x + r.h / 2, r.y + r.w / 2));
+				puntos_pasar.push_back(r);
 				entra = false;
 			}
 			else if (i == 17 && j > 0 && i < num_cell_x - 1 && ran == 4 && entra)
 			{
 				SDL_Rect r = { i * 32,j * 32,32,32 };
+				//path.points.push_back(Vector2D(r.x + r.h / 2, r.y + r.w / 2));
+				puntos_pasar.push_back(r);
 				entra = false;
 			}
 			else if (i == 25 && j > 0 && i < num_cell_x - 1 && ran == 4 && entra)
 			{
 				SDL_Rect r = { i * 32,j * 32,32,32 };
+				//path.points.push_back(Vector2D(r.x + r.h / 2, r.y + r.w / 2));
+				puntos_pasar.push_back(r);
 				entra = false;
 			}
 			else if (i == 30 && j > 0 && i < num_cell_x - 1 && ran == 4 && entra)
 			{
 				SDL_Rect r = { i * 32,j * 32,32,32 };
+				//path.points.push_back(Vector2D(r.x + r.h / 2, r.y + r.w / 2));
+				puntos_pasar.push_back(r);
 				entra = false;
 			}
 			//Sino, es terreno llano.
 			else ran = 1;
 
-			
+
 			terrain_col.push_back(ran);
 		}
 		//vector<int> terrain_col(num_cell_y, rand()+1);
@@ -408,7 +471,7 @@ void SceneAEstrella::initMaze()
 
 }
 
-void SceneAEstrella::initNodes() {
+void SceneAEstrellaRandom::initNodes() {
 	//primero de todo, dimensionamos la matriz que contendrá todos los nodos
 	//maze_nodes.resize(num_cell_x);
 	for (int i = 0; i < num_cell_x; i++)
@@ -514,7 +577,7 @@ void SceneAEstrella::initNodes() {
 }
 
 //función para checkear si un nodo concreto está contenido en el vector
-bool SceneAEstrella::CheckVector(Node* node, std::vector<Node*> vec) {
+bool SceneAEstrellaRandom::CheckVector(Node* node, std::vector<Node*> vec) {
 	for (int i = 0; i < vec.size(); i++) {
 		if (vec[i] == node)
 		{
@@ -524,7 +587,7 @@ bool SceneAEstrella::CheckVector(Node* node, std::vector<Node*> vec) {
 	return false;
 }
 
-void SceneAEstrella::Algorithm_Djisktra()
+void SceneAEstrellaRandom::Algorithm_Djisktra()
 {
 	//inicializamos la frontera con la posición inicial del jugador
 	//para ello lo convertimos a pair (para que se nos auto ordene usando las priority_queues)
@@ -672,12 +735,159 @@ void SceneAEstrella::Algorithm_Djisktra()
 }
 
 
-int SceneAEstrella::HeuristicCost(Node* actual)
+void SceneAEstrellaRandom::Algorithm_Djisktra(Vector2D startPosition, Vector2D endPosition)
+{
+	//inicializamos la frontera con la posición inicial del jugador
+	//para ello lo convertimos a pair (para que se nos auto ordene usando las priority_queues)
+	std::pair <int, Node*> element(
+		maze_nodes[startPosition.x][startPosition.y]->AccCost,
+		maze_nodes[startPosition.x][startPosition.y]);
+
+	nodos_frontera.push(element);
+
+	//mientras la frontera no este vacia...
+	while (nodos_frontera.size() != 0)
+	{
+
+		//obtenemos el primer nodo de la frontera
+		//element = nodos_frontera.top();
+		Node* nodo = nodos_frontera.top().second;
+		int cost = 0;
+
+		//comprobamos si es el nodo destino
+		if (nodo->position == endPosition) //si no va, quiza probar comparando direccion de memoria con &?
+		{
+			//si efectivamente es el nodo destino paramos el bucle
+			break;
+		}
+		else
+		{
+			if (CheckVector(nodo, nodos_visitados))
+			{
+				//si ya se ha visitado, no lo comprobaremos. lo borramos.
+				nodos_frontera.pop();
+			}
+			else
+			{
+				//si no se ha visitado, lo visitamos
+
+				//borramos el nodo de la frontera
+				nodos_frontera.pop();
+
+				//comprobamos los vecinos de tal nodo y los añadimos a la frontera
+				//Seguimos el sentido horario
+				if (nodo->TopNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->TopNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->TopNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->TopNeighbor->AccCost = nodo->TopNeighbor->cost + nodo->AccCost;
+						nodo->TopNeighbor->heuristicCost = HeuristicCost(nodo->TopNeighbor);
+						cost = nodo->TopNeighbor->AccCost + nodo->TopNeighbor->heuristicCost;
+						nodos_frontera.push(std::pair <int, Node*>(cost, nodo->TopNeighbor));
+					}
+				}
+				if (nodo->RightNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->RightNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->RightNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->RightNeighbor->AccCost = nodo->RightNeighbor->cost + nodo->AccCost;
+						nodo->RightNeighbor->heuristicCost = HeuristicCost(nodo->RightNeighbor);
+						cost = nodo->RightNeighbor->AccCost + nodo->RightNeighbor->heuristicCost;
+						nodos_frontera.push(std::pair <int, Node*>(cost, nodo->RightNeighbor));
+					}
+				}
+				if (nodo->BottomNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->BottomNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->BottomNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->BottomNeighbor->AccCost = nodo->BottomNeighbor->cost + nodo->AccCost;
+						nodo->BottomNeighbor->heuristicCost = HeuristicCost(nodo->BottomNeighbor);
+						cost = nodo->BottomNeighbor->AccCost + nodo->BottomNeighbor->heuristicCost;
+						nodos_frontera.push(std::pair <int, Node*>(cost, nodo->BottomNeighbor));
+					}
+				}
+				if (nodo->LeftNeighbor != nullptr)
+				{
+					//comprobamos que no ha sido visitado
+					if (CheckVector(nodo->LeftNeighbor, nodos_visitados))
+					{
+						//si ya se ha visitado, no lo comprobaremos.
+					}
+					else
+					{
+						//linkeamos el nodo actual al siguiente nodo
+						nodo->LeftNeighbor->PreviousNode = nodo;
+						//antes de guardarlo, actualizamos el coste acumulado con el coste para ir al siguiente nodo
+						nodo->LeftNeighbor->AccCost = nodo->LeftNeighbor->cost + nodo->AccCost;
+						nodo->LeftNeighbor->heuristicCost = HeuristicCost(nodo->LeftNeighbor);
+						cost = nodo->LeftNeighbor->AccCost + nodo->LeftNeighbor->heuristicCost;
+						nodos_frontera.push(std::pair <int, Node*>(cost, nodo->LeftNeighbor));
+					}
+				}
+
+				//añadimos a la lista de visitados el nodo visitado
+				nodos_visitados.push_back(nodo);
+			}
+		}
+
+	}
+
+	//el nodo destino es el primer nodo de la frontera
+	Node* nodo = nodos_frontera.top().second;
+	//añadimos al camino a recorrer el nodo destino
+	camino_a_recorrer.push_back(nodo);
+
+	//mientras no lleguemos al nodo origen
+	Vector2D pos = pix2cell(agents[0]->getPosition());
+	while (nodo->position != startPosition)
+	{
+		//avanzamos al nodo padre
+		nodo = nodo->PreviousNode;
+		//lo añadimos al camino a recorrer
+		camino_a_recorrer.push_back(nodo);
+	}
+	//cuando salga tendremos un vector con el camino a recorrer invertido
+
+	//añadimos al vector path.points el recorrido que debe hacer el agente, ordenado
+	for (int i = 0; i < camino_a_recorrer.size(); i++)
+	{
+		path.points.insert(path.points.begin(), cell2pix(camino_a_recorrer[i]->position));
+	}
+
+
+}
+
+int SceneAEstrellaRandom::HeuristicCost(Node* actual)
 {
 	return (int)coinPosition.Distance(coinPosition, actual->position);
 }
 
-bool SceneAEstrella::loadTextures(char* filename_bg, char* filename_coin)
+bool SceneAEstrellaRandom::loadTextures(char* filename_bg, char* filename_coin)
 {
 	SDL_Surface *image = IMG_Load(filename_bg);
 	if (!image) {
@@ -702,18 +912,18 @@ bool SceneAEstrella::loadTextures(char* filename_bg, char* filename_coin)
 	return true;
 }
 
-Vector2D SceneAEstrella::cell2pix(Vector2D cell)
+Vector2D SceneAEstrellaRandom::cell2pix(Vector2D cell)
 {
 	int offset = CELL_SIZE / 2;
 	return Vector2D(cell.x*CELL_SIZE + offset, cell.y*CELL_SIZE + offset);
 }
 
-Vector2D SceneAEstrella::pix2cell(Vector2D pix)
+Vector2D SceneAEstrellaRandom::pix2cell(Vector2D pix)
 {
 	return Vector2D((float)((int)pix.x / CELL_SIZE), (float)((int)pix.y / CELL_SIZE));
 }
 
-bool SceneAEstrella::isValidCell(Vector2D cell)
+bool SceneAEstrellaRandom::isValidCell(Vector2D cell)
 {
 	if ((cell.x < 0) || (cell.y < 0) || (cell.x >= terrain.size()) || (cell.y >= terrain[0].size()))
 		return false;
