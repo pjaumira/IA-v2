@@ -10,6 +10,8 @@
 #include "Path.h"
 #include "Node.h"
 
+#define BARRO 5;
+#define CESPED 3;
 class SceneDjikstra :
 	public Scene
 {
@@ -51,6 +53,7 @@ private:
 	std::vector<Node*> nodos_visitados;
 	std::vector<Node*> camino_a_recorrer;
 	std::vector<SDL_Rect> terreno_pantanoso;
+	std::vector<SDL_Rect> terreno_cesped;
 	void Algorithm_Djisktra();
 	void Restart();
 

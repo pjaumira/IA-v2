@@ -215,10 +215,17 @@ void SceneDjikstra::drawMaze()
 {
 	if (draw_grid)
 	{
+		//Pintar el barro.
 		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 104, 59, 16, 255);
 		for (unsigned int i = 0; i < terreno_pantanoso.size(); i++)
 			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &terreno_pantanoso[i]);
 
+		//Pintar el cesped.
+		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 100, 0, 255);
+		for (unsigned int i = 0; i < terreno_cesped.size(); i++)
+			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &terreno_cesped[i]);
+
+		//Pintar los bordes.
 		SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
 		for (unsigned int i = 0; i < maze_rects.size(); i++)
 			SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &maze_rects[i]);
@@ -318,16 +325,37 @@ void SceneDjikstra::initMaze()
 	// (1st) initialize all cells to 1 by default
 	for (int i = 0; i < num_cell_x; i++)
 	{
+		//Le introducimos los costes de cada tipo de celda, en el terrain.
 		vector<int> terrain_col;
 		for (int j = 0; j < num_cell_y; j++)
 		{
+			//Hacemos un random para que se gener los terrenos que son de coste diferente a 1.
 			int ran; 
 			ran = rand() % 10;
+
+			//Si el random es un 2, sera barro.
 			if (ran == 2)
 			{
+				//Añadimos a la lista de recuadros que se pintaran de marron.
 				SDL_Rect r = {i*32,j*32,32,32 };
 				terreno_pantanoso.push_back(r);
+				
+				//Exageramos los costes para que el agente evite pasar por aqui.
+				ran = BARRO;
 			}
+
+			// Si random es 3, sera cesped.
+			else if (ran == 3)
+			{
+				//Añadimos a la lista de recuadros que se pintaran de verde.
+				SDL_Rect r = { i * 32,j * 32,32,32 };
+				terreno_cesped.push_back(r);
+
+				//Exageramos los costes para que el agente evite pasar por aqui.
+				ran = CESPED;
+			}
+
+			//Sino, es terreno llano.
 			else ran = 1;
 			terrain_col.push_back(ran);
 		}
@@ -377,7 +405,7 @@ void SceneDjikstra::initNodes() {
 			if (terrain[i][j] != 0)
 			{
 				Node *node = new Node(identificator, Vector2D(i, j));
-				node->cost = 3;
+				node->cost = terrain[i][j];
 				maze_nodes[i][j] = node;
 				identificator++;
 			}
